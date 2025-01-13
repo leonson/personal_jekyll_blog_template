@@ -1,0 +1,138 @@
+<style>
+    .link-preview-popup {
+      display: none;
+      position: absolute;
+      width: 300px;
+      background: white;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      padding: 15px;
+      z-index: 1000;
+      font-size: 14px;
+    }
+    
+    .link-preview-popup.visible {
+      display: block;
+    }
+    
+    .preview-title {
+      font-weight: bold;
+      margin-bottom: 8px;
+      font-size: 16px;
+      color: #333;
+    }
+    
+    .preview-excerpt {
+      color: #666;
+      line-height: 1.4;
+      overflow: hidden;
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
+    }
+    
+    .preview-date {
+      color: #888;
+      font-size: 12px;
+      margin-top: 8px;
+    }
+    </style>
+    
+    <script>
+    (function() {
+      let postData = {};
+      
+      document.addEventListener('DOMContentLoaded', function() {
+        // Only proceed if we're on a post page (has page__content)
+        const contentSection = document.querySelector('.page__content');
+        if (!contentSection) {
+          return;
+        }
+        
+        const previewEl = document.createElement('div');
+        previewEl.className = 'link-preview-popup';
+        document.body.appendChild(previewEl);
+        
+        let hideTimeout;
+        
+        // Fetch all posts data
+        fetch('/previews.json')
+        .then(response => response.json())
+        .then(data => {
+            data.posts.forEach(post => {
+            const path = post.url;
+            const pathWithoutSlash = path.endsWith('/') ? path.slice(0, -1) : path;
+            
+            postData[path] = post;
+            postData[pathWithoutSlash] = post;
+            });
+        })
+        .catch(error => {
+            if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+               console.error('Error loading post data:', error);
+            }
+        });
+    
+        function showPreview(link, event) {
+          const url = new URL(link.href);
+          const pathWithSlash = url.pathname;
+          const pathWithoutSlash = pathWithSlash.endsWith('/') ? 
+            pathWithSlash.slice(0, -1) : pathWithSlash;
+            
+          const post = postData[pathWithSlash] || postData[pathWithoutSlash];
+          
+          if (post) {
+            previewEl.innerHTML = `
+              <div class="preview-title">${post.title}</div>
+              <div class="preview-excerpt">${post.excerpt}</div>
+              <div class="preview-date">${new Date(post.date).toLocaleDateString()}</div>
+            `;
+            
+            const linkRect = link.getBoundingClientRect();
+            const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+            const scrollLeft = window.pageXOffset || document.documentElement.scrollLeft;
+            
+            previewEl.style.top = `${linkRect.bottom + scrollTop + 5}px`;
+            
+            let leftPos = linkRect.left + scrollLeft;
+            const previewWidth = 300;
+            if (leftPos + previewWidth > window.innerWidth) {
+              leftPos = window.innerWidth - previewWidth - 10;
+            }
+            previewEl.style.left = `${leftPos}px`;
+            
+            previewEl.classList.add('visible');
+          }
+        }
+    
+        // Event listeners - specifically for <a> tags within page__content
+        contentSection.querySelectorAll('a').forEach(link => {
+          if (link.href && link.href.includes(window.location.hostname)) {
+            
+            link.addEventListener('mouseover', (e) => {
+              clearTimeout(hideTimeout);
+              showPreview(link, e);
+            });
+    
+            link.addEventListener('mouseout', () => {
+              hideTimeout = setTimeout(() => {
+                previewEl.classList.remove('visible');
+              }, 200);
+            });
+          }
+        });
+    
+        // Keep preview visible when hovering over it
+        previewEl.addEventListener('mouseover', () => {
+          clearTimeout(hideTimeout);
+        });
+    
+        previewEl.addEventListener('mouseout', () => {
+          hideTimeout = setTimeout(() => {
+            previewEl.classList.remove('visible');
+          }, 200);
+        });
+      });
+    })();
+    </script>

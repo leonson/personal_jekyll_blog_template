@@ -1,0 +1,9 @@
+{% if page.show_ads %}
+    <script data-ad-client="ca-pub-6780029852799491" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+{% endif %}
+{% if page.map %}
+  {% include head/leaflet.html %}
+{% endif %}
+<link rel="stylesheet" href="{{ '/assets/css/custom.css' | relative_url }}">
+
+{% include head/link-preview.html %}

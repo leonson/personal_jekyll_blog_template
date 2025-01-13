@@ -1,0 +1,61 @@
+<div id="post-map-{{ include.id }}" class="post-map"></div>
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    var locationData = {{ site.data.locations | jsonify }};
+    // Get custom popups if provided
+    var customPopups = {{ include.popups | jsonify }};
+    var locations = [];
+    
+    // Process locations
+    {% if include.locations %}
+      {% assign requestedLocations = include.locations | split: "," %}
+      {% for loc in requestedLocations %}
+        if (locationData['{{ loc }}']) {
+          locations.push({
+            ...locationData['{{ loc }}'],
+            id: '{{ loc }}'
+          });
+        }
+      {% endfor %}
+    {% else %}
+      {% for loc in page.locations %}
+        if (locationData['{{ loc }}']) {
+          locations.push({
+            ...locationData['{{ loc }}'],
+            id: '{{ loc }}'
+          });
+        }
+      {% endfor %}
+    {% endif %}
+    
+    if (locations.length > 0) {
+      var bounds = L.latLngBounds(locations.map(loc => [loc.lat, loc.lng]));
+      var map = L.map('post-map-{{ include.id }}');
+      
+      map.fitBounds(bounds, {
+        padding: [50, 50],
+        maxZoom: {{ include.zoom | default: 13 }}
+      });
+      
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+      }).addTo(map);
+      
+      // Add markers
+      locations.forEach(function(loc) {
+        // Use custom popup if available, otherwise use default title
+        var popupContent = customPopups && customPopups[loc.id] ? 
+          customPopups[loc.id] : 
+          `<strong>${loc.title}</strong>`;
+        
+        L.marker([loc.lat, loc.lng])
+          .addTo(map)
+          .bindPopup(popupContent);
+      });
+      
+      setTimeout(function() {
+        map.invalidateSize();
+      }, 100);
+    }
+  });
+</script>

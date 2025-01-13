@@ -1,0 +1,81 @@
+author: your_name
+baseurl: ''
+collections:
+  reading:
+    output: true
+    permalink: /:collection/:path/
+  travel:
+    output: true
+    permalink: /:collection/:path/
+defaults:
+- scope:
+    path: _posts
+    type: posts
+  values:
+    author_profile: true
+    comments: true
+    layout: single
+    read_time: false
+    related: true
+    share: true
+    show_ads: true
+- scope:
+    path: ''
+    type: travel
+  values:
+    author_profile: true
+    comments: true
+    layout: single
+    read_time: false
+    related: false
+    share: true
+    show_ads: true
+- scope:
+    path: ''
+    type: reading
+  values:
+    author_profile: true
+    comments: true
+    layout: single
+    read_time: false
+    related: false
+    share: true
+    show_ads: true
+description: your_blog_description
+exclude:
+- README.md
+include:
+- _posts
+- _pages
+- about
+- aboutcn
+- previews.json
+kramdown:
+  hard_wrap: false
+  input: GFM
+  parse_block_html: true
+languages:
+- en
+- zh
+logo: myicon.png
+markdown: kramdown
+minimal_mistakes_skin: air
+name: your_blog_name
+paginate: 10
+paginate_path: /page:num/
+plugins:
+- jekyll-paginate
+- jekyll-sitemap
+- jekyll-gist
+- jekyll-feed
+- jemoji
+- jekyll-include-cache
+remote_theme: mmistakes/minimal-mistakes
+search: true
+show_date: true
+tag_archive:
+  path: /tags/
+  type: liquid
+title: your_blog_title
+url: your_blog_url
+words_per_minute: 180

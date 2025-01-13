@@ -1,0 +1,11 @@
+main:
+- title: Posts
+  url: /
+- title: Travel
+  url: /travel
+- title: Reading
+  url: /reading
+- title: Tags
+  url: /tags/
+- title: About
+  url: /about

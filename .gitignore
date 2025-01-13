@@ -1,0 +1,8 @@
+_site
+_drafts
+.sass-cache
+.DS_Store
+Gemfile*
+.jekyll-cache/
+_posts/blog.code-workspace
+.tool-versions
