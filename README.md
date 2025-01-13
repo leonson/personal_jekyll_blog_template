@@ -49,3 +49,12 @@ Handy tools I created to manage this blog:
 ## License
 
 This template is available under the MIT License.
+
+## Appreciation
+
+I am grateful for:
+
+1. [Jekyll Framework](https://jekyllrb.com/), on which my blog has depended [since 2018](https://leonson.me/2020/09/blog-migration-history#migration-from-wordpress-to-jekyll2018-or-earlier).
+2. [Minimal Mistakes](https://mademistakes.com/work/jekyll-themes/minimal-mistakes/), a minimalist and beautiful Jekyll theme [since 2020](https://leonson.me/2020/09/blog-migration-history#migrating-jekyll-theme-from-minima-to-minimal-mistakes-2020).
+3. GitHub Pages, on which my blog host.
+4. ChatGPT and Claude, which has been helpful for me to add more features.
